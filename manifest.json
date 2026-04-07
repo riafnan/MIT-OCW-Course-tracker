@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "MIT OCW Tracker",
   "version": "1.0",
-  "description": "Auto-tracks your MIT OpenCourseware visits and lets you jump back to your last page.",
+  "description": "Auto-tracks your MIT OpenCourseware visits.",
   "permissions": ["tabs", "storage"],
   "icons": {
     "16": "icon16.png",
@@ -15,11 +15,5 @@
   },
   "action": {
     "default_popup": "popup.html"
-  },
-  "content_scripts": [
-    {
-      "matches": ["*://ocw.mit.edu/*"],
-      "js": ["content.js"]
-    }
-  ]
+  }
 }
