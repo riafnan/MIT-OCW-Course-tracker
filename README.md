@@ -30,3 +30,5 @@ Since this is a personal project and not on the Chrome Web Store, you'll need to
 ## Tech notes
 
 It's built with vanilla JS, HTML, and CSS (Manifest V3). No frameworks, no build steps. The floating widget uses a Shadow DOM to keep styles completely isolated from the MIT OCW website, so it won't break or slow down the page.
+
+
