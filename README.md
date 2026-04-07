@@ -1,34 +1,32 @@
 # OCW Tracker
 
-A lightweight, premium Chrome extension that auto-tracks your MIT OpenCourseware (OCW) progress and helps you stay focused on your learning journey.
+I built this Chrome extension for myself because I kept losing track of where I left off while studying on MIT OpenCourseware. It's a simple, personal tool that auto-tracks my OCW visits and gives me a quick way to jump back to my last session. 
 
-## Features
+I'm sharing it here in case anyone else finds it useful. Feel free to use it, tweak it, or fork it for your own study flow.
 
-- **Proactive Corner Widget**: A sleek, glassmorphic pill that appears in the bottom-right corner when you're on MIT OCW, allowing you to jump back to your last visited page instantly.
-- **Smart Tracking**: Automatically remembers the last page you visited and maintains a history of your most recent study sessions.
-- **Motivational Quotes**: Features over 150+ hand-picked quotes to keep you disciplined and inspired while you study.
-- **Premium Aesthetic**: Modern "dark mode" design with smooth, GPU-accelerated animations and glassmorphism effects.
-- **Privacy Focused**: All data is stored locally in your browser using `chrome.storage.local`. No external servers or tracking.
-- **Zero Bloat**: Extremely lightweight implementation with no external dependencies or heavy assets.
+## What it does
 
-## Installation
+- **Floating "Jump Back" Widget**: When you're on an OCW page, a small, sleek pill appears in the bottom-right corner reminding you of your last visited page. Click it to instantly return.
+- **Auto-Tracking**: No setup required. Just browse `ocw.mit.edu` and it remembers your history.
+- **Motivational Quotes**: A rotating pool of 150+ quotes in the popup to keep me focused when the grind gets heavy.
+- **Zero Bloat / Privacy First**: Everything runs locally in your browser. No analytics, no external requests, no tracking.
 
-1. Clone this repository or download the source code.
-2. Open Chrome and navigate to `chrome://extensions/`.
-3. Enable **Developer mode** (toggle in the top right corner).
-4. Click **Load unpacked** and select the `ocw-tracker` directory.
+## How to install
 
-## Usage
+Since this is a personal project and not on the Chrome Web Store, you'll need to load it manually:
 
-- **Automatic Tracking**: Just browse MIT OCW. The extension will automatically save your progress.
-- **Jump Back**: Use the "Resume Learning" button in the popup or the floating widget on the site to return to your last session.
-- **History**: View your last 7 visited pages in the popup for quick navigation.
-- **Clear History**: Click the 🗑️ icon in the popup header to reset your tracking data.
+1. **Download the code**: Clone this repo or download it as a `.zip` and extract it.
+2. **Open Chrome Extensions**: Go to `chrome://extensions/` in your browser.
+3. **Enable Developer Mode**: Toggle the switch in the top-right corner.
+4. **Load Unpacked**: Click the "Load unpacked" button and select the folder containing these files.
 
-## Architecture
+## How to use
 
-- `manifest.json`: Extension configuration (Manifest V3).
-- `background.js`: Service worker for tracking URL changes and managing storage.
-- `content.js`: Lightweight Shadow DOM widget injected into OCW pages.
-- `popup.html/js/css`: The main UI for history and motivation.
+- **Just browse**: Visit any page on `ocw.mit.edu`. The extension will silently track it.
+- **Jump back**: If you're on a different OCW page than your last session, the corner widget will slide in. Click it to return.
+- **Check history**: Click the extension icon to see your recent pages and a fresh quote.
+- **Clear data**: Hit the 🗑️ icon in the popup header if you want to wipe your history.
 
+## Tech notes
+
+It's built with vanilla JS, HTML, and CSS (Manifest V3). No frameworks, no build steps. The floating widget uses a Shadow DOM to keep styles completely isolated from the MIT OCW website, so it won't break or slow down the page.
