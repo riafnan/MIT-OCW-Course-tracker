@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCW Tracker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo-group">
+        <span class="logo">OCW</span>
+        <span class="label">Tracker</span>
+      </div>
+      <button class="clear-btn" id="clearBtn" title="Clear History">
+        <span class="trash-icon">🗑️</span>
+      </button>
+    </div>
+
+    <div class="quote-box" id="quoteBox">
+      <p class="quote-text" id="quoteText"></p>
+      <p class="quote-author" id="quoteAuthor"></p>
+    </div>
+
+    <button class="resume-btn" id="resumeBtn">
+      <span class="btn-icon">▶</span>
+      <span class="btn-text" id="btnText">Resume Learning</span>
+    </button>
+
+    <div class="history-section">
+      <h3 class="history-title">Recent Pages</h3>
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <p class="empty-icon">📚</p>
+      <p class="empty-text">No OCW pages tracked yet.<br>Visit <strong>ocw.mit.edu</strong> and I'll remember where you left off.</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
