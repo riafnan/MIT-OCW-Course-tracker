@@ -156,6 +156,7 @@ const QUOTES = [
 
 const HISTORY_KEY = "ocw_history";
 const LAST_KEY = "ocw_last";
+const PROGRESS_KEY = "ocw_progress";
 
 /**
  * Returns a random motivational quote from the pool.
@@ -228,9 +229,38 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Load data from storage and render the UI
-  chrome.storage.local.get([LAST_KEY, HISTORY_KEY], (result) => {
+  chrome.storage.local.get([LAST_KEY, HISTORY_KEY, PROGRESS_KEY], (result) => {
     const last = result[LAST_KEY];
     const history = result[HISTORY_KEY] || [];
+    const progress = result[PROGRESS_KEY] || {};
+
+    // Render Progress Bars
+    const courseIds = Object.keys(progress);
+    if (courseIds.length > 0) {
+      const progressSection = document.getElementById("progressSection");
+      const progressList = document.getElementById("courseProgressList");
+      progressSection.style.display = "block";
+      
+      // Sort by course with most recent activity could be better, but let's keep it simple
+      courseIds.forEach(id => {
+        const course = progress[id];
+        const percent = Math.min(100, Math.round((course.visited.length / course.total) * 100));
+        
+        const courseEl = document.createElement("div");
+        courseEl.className = "progress-item";
+        courseEl.innerHTML = `
+          <div class="progress-info">
+            <span class="progress-name">${course.title || id}</span>
+            <span class="progress-percent">${percent}%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: ${percent}%"></div>
+          </div>
+          <div class="progress-stats">${course.visited.length} of ${course.total} pages visited</div>
+        `;
+        progressList.appendChild(courseEl);
+      });
+    }
 
     // If no history exists, show the empty state
     if (!last || history.length === 0) {

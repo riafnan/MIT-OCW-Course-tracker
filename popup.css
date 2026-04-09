@@ -285,3 +285,74 @@ body {
 .empty-text strong {
   color: #a78bfa;
 }
+
+/* Progress Section Styles */
+.progress-section {
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.section-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #6b6b80;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.progress-item {
+  margin-bottom: 14px;
+}
+
+.progress-item:last-child {
+  margin-bottom: 0;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.progress-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #e8e8ed;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.progress-percent {
+  font-size: 11px;
+  font-weight: 800;
+  color: #a78bfa;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #60a5fa);
+  border-radius: 100px;
+  transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.progress-stats {
+  font-size: 9px;
+  color: #6b6b80;
+  font-weight: 500;
+}

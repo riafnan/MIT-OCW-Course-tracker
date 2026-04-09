@@ -10,6 +10,52 @@
     injectWidget(last);
   });
 
+  // --- PROGRESS TRACKING LOGIC ---
+  function getCourseMetadata() {
+    const url = window.location.href;
+    const match = url.match(/ocw\.mit\.edu\/courses\/([^/]+)/);
+    if (!match) return null;
+
+    const courseId = match[1];
+    let courseTitle = "";
+    const titleEl = document.querySelector('meta[property="og:site_name"]');
+    if (titleEl) {
+      courseTitle = titleEl.getAttribute("content");
+    } else {
+      courseTitle = document.title.split("|")[0].trim();
+    }
+
+    // Identify unique content links in the sidebar to estimate total pages
+    const navLinks = document.querySelectorAll('nav a[href*="/courses/' + courseId + '"]');
+    const uniqueUrls = new Set();
+    navLinks.forEach(link => {
+      try {
+        const linkUrl = new URL(link.href);
+        const cleanUrl = linkUrl.origin + linkUrl.pathname.replace(/\/$/, "");
+        uniqueUrls.add(cleanUrl);
+      } catch (e) {}
+    });
+
+    if (uniqueUrls.size > 5) { // Threshold to avoid counting non-course pages
+      return {
+        courseId,
+        courseTitle,
+        totalItems: uniqueUrls.size,
+        currentUrl: window.location.origin + window.location.pathname.replace(/\/$/, "")
+      };
+    }
+    return null;
+  }
+
+  const metadata = getCourseMetadata();
+  if (metadata) {
+    chrome.runtime.sendMessage({
+      type: "COURSE_METADATA",
+      data: metadata
+    });
+  }
+  // --- END PROGRESS TRACKING ---
+
   /**
    * Injects a floating widget using Shadow DOM.
    * Shadow DOM is used to ensure the widget's styles (like .text or .icon)
