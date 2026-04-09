@@ -1,15 +1,15 @@
 # OCW Tracker
 
-I built this Chrome extension for myself because I kept losing track of where I left off while studying on MIT OpenCourseware. It's a simple, personal tool that auto-tracks my OCW visits and gives me a quick way to jump back to my last session. 
+I built this Chrome extension for myself because I kept losing track of where I left off while studying on MIT OpenCourseware. It's a simple, personal tool that auto-tracks my OCW visits and gives me a quick way to jump back to my last session and show my course progress. 
 
 I'm sharing it here in case anyone else finds it useful. Feel free to use it, tweak it, or fork it for your own study flow.
 
 ## What it does
 
 - **Course Progress Tracking**: Automatically tracks how much of each MIT OCW course you've completed. Shows percentage done and pages visited (e.g., "9 of 15 pages visited").
-- **Floating "Jump Back" Widget**: When you're on an OCW page, a small, sleek pill appears in the bottom-right corner reminding you of your last visited page. Click it to instantly return.
+- **Floating "Jump Back" Widget**: When you're on an OCW page, a small, sleek pill appears in the bottom-right corner, reminding you of your last visited page. Click it to return instantly.
 - **Auto-Tracking**: No setup required. Just browse `ocw.mit.edu` and it remembers your history.
-- **Motivational Quotes**: A rotating pool of 150+ quotes in the popup to keep me focused when the grind gets heavy.
+- **Motivational Quotes**: A rotating pool of 150+ quotes in the pop-up to keep me focused when the grind gets heavy.
 - **Zero Bloat / Privacy First**: Everything runs locally in your browser. No analytics, no external requests, no tracking.
 
 ## How to install
