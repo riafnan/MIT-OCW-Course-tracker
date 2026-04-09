@@ -27,9 +27,11 @@
       courseTitle = document.title.split("|")[0].trim();
     }
 
-    // Identify unique content links in the sidebar to estimate total pages
-    const navLinks = document.querySelectorAll('nav a[href*="/courses/' + courseId + '"]');
+    // Find all links that belong to this course - multiple strategies
     const uniqueUrls = new Set();
+    
+    // Strategy 1: nav links with course ID
+    const navLinks = document.querySelectorAll('nav a[href*="/courses/' + courseId + '"]');
     navLinks.forEach(link => {
       try {
         const linkUrl = new URL(link.href);
@@ -38,7 +40,34 @@
       } catch (e) {}
     });
 
-    if (uniqueUrls.size > 5) {
+    // Strategy 2: Any link that includes this course path
+    if (uniqueUrls.size < 3) {
+      const allCourseLinks = document.querySelectorAll('a[href*="/courses/' + courseId + '/"]');
+      allCourseLinks.forEach(link => {
+        try {
+          const linkUrl = new URL(link.href);
+          const cleanUrl = linkUrl.origin + linkUrl.pathname.replace(/\/$/, "");
+          uniqueUrls.add(cleanUrl);
+        } catch (e) {}
+      });
+    }
+
+    // Strategy 3: Check sidebar/grid links on course pages
+    if (uniqueUrls.size < 3) {
+      const sidebarLinks = document.querySelectorAll('[class*="sidebar"] a, [class*="nav"] a, [class*="menu"] a, [id*="nav"] a, aside a');
+      sidebarLinks.forEach(link => {
+        try {
+          if (link.href && link.href.includes('/courses/' + courseId)) {
+            const linkUrl = new URL(link.href);
+            const cleanUrl = linkUrl.origin + linkUrl.pathname.replace(/\/$/, "");
+            uniqueUrls.add(cleanUrl);
+          }
+        } catch (e) {}
+      });
+    }
+
+    // If we found enough links, show the progress bar
+    if (uniqueUrls.size >= 3) {
       return {
         courseId,
         courseTitle,
@@ -47,6 +76,52 @@
       };
     }
     return null;
+  }
+
+  function findLinksWithDelay(courseId, maxAttempts = 3) {
+    return new Promise((resolve) => {
+      let attempts = 0;
+      
+      function tryFind() {
+        const uniqueUrls = new Set();
+        
+        const navLinks = document.querySelectorAll('nav a[href*="/courses/' + courseId + '"]');
+        navLinks.forEach(link => {
+          try {
+            const linkUrl = new URL(link.href);
+            uniqueUrls.add(linkUrl.origin + linkUrl.pathname.replace(/\/$/, ""));
+          } catch (e) {}
+        });
+
+        if (uniqueUrls.size >= 3) {
+          resolve(uniqueUrls.size);
+          return true;
+        }
+
+        const allLinks = document.querySelectorAll('a[href*="/courses/' + courseId + '/"]');
+        allLinks.forEach(link => {
+          try {
+            const linkUrl = new URL(link.href);
+            uniqueUrls.add(linkUrl.origin + linkUrl.pathname.replace(/\/$/, ""));
+          } catch (e) {}
+        });
+
+        if (uniqueUrls.size >= 3) {
+          resolve(uniqueUrls.size);
+          return true;
+        }
+
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(tryFind, 500);
+        } else {
+          resolve(uniqueUrls.size);
+        }
+        return false;
+      }
+
+      tryFind();
+    });
   }
 
   const metadata = getCourseMetadata();
@@ -58,11 +133,30 @@
 
     // Inject the floating progress bar
     injectProgressBar(metadata);
+  } else {
+    // Try with delay for lazy-loaded pages
+    const delayedMatch = window.location.href.match(/ocw\.mit\.edu\/courses\/([^/]+)/);
+    if (delayedMatch) {
+      const courseId = delayedMatch[1];
+      findLinksWithDelay(courseId).then((linkCount) => {
+        if (linkCount >= 3) {
+          // Retry getting metadata now that links are loaded
+          const retryMetadata = getCourseMetadata();
+          if (retryMetadata) {
+            chrome.runtime.sendMessage({
+              type: "COURSE_METADATA",
+              data: retryMetadata
+            });
+            injectProgressBar(retryMetadata);
+          }
+        }
+      });
+    }
   }
   // --- END PROGRESS TRACKING ---
 
   function injectProgressBar(metadata) {
-    const { courseId } = metadata;
+    const { courseId, courseTitle, totalItems } = metadata;
 
     chrome.storage.local.get([PROGRESS_KEY, PROGRESS_BAR_KEY], (result) => {
       const progress = result[PROGRESS_KEY] || {};
@@ -72,13 +166,23 @@
       if (dismissed[courseId]) return;
 
       const courseProgress = progress[courseId];
-      if (!courseProgress) return;
+      let visited, total, title;
 
-      const visited = courseProgress.visited || [];
-      const total = courseProgress.total || 1;
+      if (courseProgress) {
+        visited = courseProgress.visited || [];
+        total = courseProgress.total || totalItems;
+        title = courseProgress.title || courseTitle;
+      } else {
+        // First visit - show with 0 progress
+        visited = [];
+        total = totalItems;
+        title = courseTitle;
+      }
+
+      // Handle edge case where total is 0 or invalid
+      total = total || 1;
       const percent = Math.min(100, Math.round((visited.length / total) * 100));
-
-      createProgressBar(courseProgress.title || courseId, visited.length, total, percent, courseId);
+      createProgressBar(title, visited.length, total, percent, courseId);
     });
   }
 
@@ -131,9 +235,10 @@
         justify-content: space-between;
         padding: 12px 14px 8px;
         cursor: pointer;
+        transition: background 0.2s ease;
       }
       .header:hover {
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(255, 255, 255, 0.05);
       }
       .header-left {
         display: flex;
